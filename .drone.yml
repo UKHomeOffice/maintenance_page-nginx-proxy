@@ -103,6 +103,10 @@ steps:
 #    event:
 #    - push
 
+trigger:
+  branch:
+    include:
+      - main
 
 services:
 - name: docker
