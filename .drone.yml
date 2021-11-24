@@ -94,10 +94,14 @@ steps:
     - latest-dev
     - ${DRONE_COMMIT_SHA}
   when:
-    branch:
-    - development
     event:
-    - push
+      - push
+      - pull_request
+#  when:
+#    branch:
+#    - development
+#    event:
+#    - push
 
 
 services:
