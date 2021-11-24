@@ -10,22 +10,22 @@ workspace:
   path: /workdir
 
 steps:
-- name: build_and_test_image
-  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
-  commands:
-  - apk add curl bash wget tar
-  - n=0; while [ "$n" -lt 60 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
-  - ./ci-build.sh
-  environment:
-    GEOIP_ACCOUNT_ID:
-      from_secret: geoip_account_id
-    GEOIP_LICENSE_KEY:
-      from_secret: geoip_license_key
-  when:
-    event:
-    - pull_request
-    - push
-    - tag
+#- name: build_and_test_image
+#  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+#  commands:
+#  - apk add curl bash wget tar
+#  - n=0; while [ "$n" -lt 60 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
+#  - ./ci-build.sh
+#  environment:
+#    GEOIP_ACCOUNT_ID:
+#      from_secret: geoip_account_id
+#    GEOIP_LICENSE_KEY:
+#      from_secret: geoip_license_key
+#  when:
+#    event:
+#    - pull_request
+#    - push
+#    - tag
 
 - name: anchore_scan
   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
