@@ -83,7 +83,7 @@ steps:
       from_secret: AWS_ACCESS_KEY_ID
     secret_key:
       from_secret: AWS_SECRET_ACCESS_KEY
-    repo: dsa/docker-aws-selenium
+    repo: dsa/maintenance-page-nginx-proxy
     registry: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
     region: eu-west-2
     create_repository: false
