@@ -105,8 +105,7 @@ steps:
 
 trigger:
   branch:
-    include:
-      - main
+  - main
 
 services:
 - name: docker
