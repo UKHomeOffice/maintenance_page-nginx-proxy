@@ -77,7 +77,6 @@ steps:
 
 - name: build_push_to_ecr_dev
   image: plugins/ecr
-  # image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/ecr
   settings:
     access_key:
       from_secret: AWS_ACCESS_KEY_ID
@@ -91,7 +90,7 @@ steps:
     - APP_BUILD=${DRONE_COMMIT_SHA}
     - DOCKER_HOST=tcp://172.17.0.1:2375
     tags:
-    - latest-dev
+    - dev-latest
     - ${DRONE_COMMIT_SHA}
   when:
     event:
