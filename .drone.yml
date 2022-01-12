@@ -10,6 +10,46 @@ workspace:
   path: /workdir
 
 steps:
+- name: build_push_to_ecr_dev
+  image: plugins/ecr
+  settings:
+    access_key:
+      from_secret: AWS_ACCESS_KEY_ID
+    secret_key:
+      from_secret: AWS_SECRET_ACCESS_KEY
+    repo: dsa/maintenance-page-nginx-proxy
+    registry: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
+    region: eu-west-2
+    create_repository: false
+    build_args:
+    - APP_BUILD=${DRONE_COMMIT_SHA}
+    - DOCKER_HOST=tcp://172.17.0.1:2375
+    tags:
+    - dev-latest
+    - ${DRONE_COMMIT_SHA}
+  when:
+    event:
+      - push
+      - pull_request
+  #  when:
+  #    branch:
+  #    - development
+  #    event:
+  #    - push
+
+  trigger:
+    branch:
+    - main
+
+  services:
+  - name: docker
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+
+  - name: anchore-submission-server
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
+    pull: always
+    commands:
+      - /run.sh server
 #- name: build_and_test_image
 #  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
 #  commands:
@@ -39,24 +79,6 @@ steps:
 #    - push
 #    - pull_request
 
-#- name: push_image_to_artifactory
-#  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
-#  commands:
-#  - docker login -u="$${DOCKER_USERNAME}" -p="$${DOCKER_PASSWORD}" "$${DOCKER_REPO}"
-#  - ./publish.sh "ngx" "$${DOCKER_REPO}$${DOCKER_BASEDIR}$${DOCKER_IMAGE}" "$${DRONE_TAG}"
-#  environment:
-#    DOCKER_BASEDIR: /
-#    DOCKER_IMAGE: nginx-proxy
-#    DOCKER_PASSWORD:
-#      from_secret: docker_password
-#    DOCKER_REPO: artifactory-internal.digital.homeoffice.gov.uk
-#    DOCKER_USERNAME: docker-nginx-proxy-robot
-#  depends_on:
-#    - build_and_test_image
-#  when:
-#    event:
-#    - tag
-
 #- name: push_image_to_quay
 #  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
 #  commands:
@@ -74,44 +96,3 @@ steps:
 #  when:
 #    event:
 #    - tag
-
-- name: build_push_to_ecr_dev
-  image: plugins/ecr
-  settings:
-    access_key:
-      from_secret: AWS_ACCESS_KEY_ID
-    secret_key:
-      from_secret: AWS_SECRET_ACCESS_KEY
-    repo: dsa/maintenance-page-nginx-proxy
-    registry: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
-    region: eu-west-2
-    create_repository: false
-    build_args:
-    - APP_BUILD=${DRONE_COMMIT_SHA}
-    - DOCKER_HOST=tcp://172.17.0.1:2375
-    tags:
-    - dev-latest
-    - ${DRONE_COMMIT_SHA}
-  when:
-    event:
-      - push
-      - pull_request
-#  when:
-#    branch:
-#    - development
-#    event:
-#    - push
-
-trigger:
-  branch:
-  - main
-
-services:
-- name: docker
-  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
-
-- name: anchore-submission-server
-  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
-  pull: always
-  commands:
-    - /run.sh server
